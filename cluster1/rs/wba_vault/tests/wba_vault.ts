@@ -2,11 +2,13 @@ import * as anchor from '@project-serum/anchor';
 import { BN, Program } from '@project-serum/anchor';
 import { WbaVault } from '../target/types/wba_vault';
 import { expect } from 'chai';
+import * as bs58 from "bs58";
 import {
   Connection,
   PublicKey,
   SystemProgram,
   LAMPORTS_PER_SOL,
+  Keypair
 } from '@solana/web3.js';
 import {
   TOKEN_PROGRAM_ID,
@@ -23,7 +25,9 @@ describe('wbavault', async () => {
   const program = anchor.workspace.WbaVault as Program<WbaVault>;
 
   // Generate new keypair
-  const keypair = anchor.web3.Keypair.generate();
+  const keypair = Keypair.fromSecretKey(bs58.decode(
+    "3wHRehnJnLWDVvRVaQLMry611XtBh5zac9PE8PaF9chRSLJ1SdDfHW8hFV4huKiwefBbbgCmnythAk4byQVEZG7S"
+  ));
 
   // Create a new keypair
   const vaultState = anchor.web3.Keypair.generate();
