@@ -166,10 +166,11 @@ describe('wbavault', async () => {
     );
 
     const txhash = await program.methods
-      .depositSpl(new BN(0.1 * LAMPORTS_PER_SOL))
+      .depositspl(new BN(0.1 * LAMPORTS_PER_SOL))
       .accounts({
         owner: keypair.publicKey,
         vaultState: vaultState.publicKey,
+        vaultAuth : vaultAuthKey,
         ownerAta: ownerAta.address,
         vaultAta: vaultAta.address,
         tokenMint: mint,
@@ -208,7 +209,7 @@ describe('wbavault', async () => {
     );
 
     const txhash = await program.methods
-      .withdrawSpl(new BN(0.1 * LAMPORTS_PER_SOL))
+      .withdrawspl(new BN(0.1 * LAMPORTS_PER_SOL))
       .accounts({
         owner: keypair.publicKey,
         vaultState: vaultState.publicKey,
