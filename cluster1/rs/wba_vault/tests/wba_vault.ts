@@ -2,13 +2,11 @@ import * as anchor from '@project-serum/anchor';
 import { BN, Program } from '@project-serum/anchor';
 import { WbaVault } from '../target/types/wba_vault';
 import { expect } from 'chai';
-import * as bs58 from "bs58";
 import {
   Connection,
   PublicKey,
   SystemProgram,
   LAMPORTS_PER_SOL,
-  Keypair
 } from '@solana/web3.js';
 import {
   TOKEN_PROGRAM_ID,
@@ -22,12 +20,11 @@ describe('wbavault', async () => {
   anchor.AnchorProvider.env().opts.commitment = 'confirmed';
   anchor.setProvider(anchor.AnchorProvider.env());
   const provider = anchor.getProvider();
+  const programId = new anchor.web3.PublicKey("6ovDeEcBheupRS4qVwLcCAF27PKT9UBFV3GSQckDnboT");
   const program = anchor.workspace.WbaVault as Program<WbaVault>;
-
+  console.log(program.programId)
   // Generate new keypair
-  const keypair = Keypair.fromSecretKey(bs58.decode(
-    "3wHRehnJnLWDVvRVaQLMry611XtBh5zac9PE8PaF9chRSLJ1SdDfHW8hFV4huKiwefBbbgCmnythAk4byQVEZG7S"
-  ));
+  const keypair = anchor.web3.Keypair.generate();
 
   // Create a new keypair
   const vaultState = anchor.web3.Keypair.generate();
@@ -35,17 +32,10 @@ describe('wbavault', async () => {
   // Create the PDA for our vault auth
   const vaultAuthSeeds = [Buffer.from('auth'), vaultState.publicKey.toBuffer()];
 
-  const [vaultAuthKey, vaultAuthBump] = PublicKey.findProgramAddressSync(
-    vaultAuthSeeds,
-    program.programId
-  );
-
+  const vaultAuthKey = anchor.web3.PublicKey.findProgramAddressSync(vaultAuthSeeds, program.programId)[0];
   // Create the PDA for our vault
   const vaultSeeds = [Buffer.from('vault'), vaultAuthKey.toBuffer()];
-  const [vaultKey, vaultBump] = PublicKey.findProgramAddressSync(
-    vaultSeeds,
-    program.programId
-  );
+  const vaultKey = anchor.web3.PublicKey.findProgramAddressSync(vaultSeeds, program.programId)[0];
 
   let mint = null;
 
@@ -111,7 +101,7 @@ describe('wbavault', async () => {
         vaultState: vaultState.publicKey,
         vaultAuth: vaultAuthKey,
         vault: vaultKey,
-        systemProgram: SystemProgram.programId,
+        systemProgram: anchor.web3.SystemProgram.programId,
       })
       .signers([keypair, vaultState])
       .rpc();
