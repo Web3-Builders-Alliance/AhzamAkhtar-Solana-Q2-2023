@@ -20,7 +20,7 @@ describe('wbavault', async () => {
   anchor.AnchorProvider.env().opts.commitment = 'confirmed';
   anchor.setProvider(anchor.AnchorProvider.env());
   const provider = anchor.getProvider();
-  const programId = new anchor.web3.PublicKey("6ovDeEcBheupRS4qVwLcCAF27PKT9UBFV3GSQckDnboT");
+  const programId = new anchor.web3.PublicKey("5uJAovsXjHarhXXZyjFXLhZvNMT63mbj3gWhqU76hvkp");
   const program = anchor.workspace.WbaVault as Program<WbaVault>;
   console.log(program.programId)
   // Generate new keypair
@@ -140,7 +140,11 @@ describe('wbavault', async () => {
         systemProgram: SystemProgram.programId,
       })
       .signers([keypair])
-      .rpc();
+      .rpc(
+        {
+          skipPreflight : true
+        }
+      );
 
     const vaultAfterBalance = await provider.connection.getBalance(vaultKey);
 
@@ -218,6 +222,7 @@ describe('wbavault', async () => {
         vaultAta: vaultAta.address,
         tokenMint: mint,
         tokenProgram: TOKEN_PROGRAM_ID,
+        systemProgram : SystemProgram.programId,
       })
       .signers([keypair])
       .rpc();
@@ -234,7 +239,7 @@ describe('wbavault', async () => {
       tokenAccount.value[0].pubkey
     );
 
-    const vaultStateAccount = await program.account.vaultState.fetch(
+    const vaultStateAccount = await program.account.vault.fetch(
       vaultState.publicKey
     );
 

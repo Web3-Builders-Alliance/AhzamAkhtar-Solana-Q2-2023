@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 use anchor_lang::solana_program::entrypoint::ProgramResult;
 use anchor_spl::{token::{TokenAccount, Token, Mint, Transfer as SplTransfer}, associated_token::AssociatedToken};
 
-declare_id!("6ovDeEcBheupRS4qVwLcCAF27PKT9UBFV3GSQckDnboT");
+declare_id!("5uJAovsXjHarhXXZyjFXLhZvNMT63mbj3gWhqU76hvkp");
 
 #[program]
 pub mod wba_vault {
@@ -175,7 +175,7 @@ pub struct DepositSpl <'info>
     pub owner_ata : Account <'info, TokenAccount>,
     #[account(mut, has_one = owner)]
     pub vault_state : Account <'info, Vault>,
-    #[account(seeds = [b"auth", vault_state.key().as_ref()], bump=vault_state.auth_bump)]
+    #[account(seeds = [b"auth", vault_state.key().as_ref()], bump=vault_state.vault_bump)]
     /// CHECK
     pub vault_auth: UncheckedAccount<'info>,
     #[account(init_if_needed, payer = owner, associated_token::mint = token_mint, associated_token::authority = vault_auth)]
@@ -193,7 +193,7 @@ pub struct WithdrawSpl<'info> {
     pub owner_ata: Account<'info, TokenAccount>,
     #[account(mut, has_one = owner)]
     pub vault_state: Account<'info, Vault>,
-    #[account(seeds = [b"auth", vault_state.key().as_ref()], bump=vault_state.auth_bump)]
+    #[account(seeds = [b"auth", vault_state.key().as_ref()], bump)]
     /// CHECK
     pub vault_auth: UncheckedAccount<'info>,
     #[account(mut)]
