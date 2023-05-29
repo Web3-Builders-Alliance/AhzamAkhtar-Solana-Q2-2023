@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 use anchor_lang::solana_program::entrypoint::ProgramResult;
 use anchor_spl::{token::{TokenAccount, Token, Mint, Transfer as SplTransfer}, associated_token::AssociatedToken};
 
-declare_id!("5uJAovsXjHarhXXZyjFXLhZvNMT63mbj3gWhqU76hvkp");
+declare_id!("53SX2j4x8UaKM7fdy8C1UWUwhmMbKVBpsHRQVKLvHcwP");
 
 #[program]
 pub mod wba_vault {
@@ -88,7 +88,7 @@ pub mod wba_vault {
         let seeds = &[
             "auth".as_bytes(),
             &ctx.accounts.vault_state.key().clone().to_bytes(),
-            &[ctx.accounts.vault_state.auth_bump]
+            &[ctx.accounts.vault_state.vault_bump]
         ];
         let signer_seeds = &[&seeds[..]];
         let cpi_accounts = anchor_spl::token::Transfer {
@@ -190,10 +190,11 @@ pub struct DepositSpl <'info>
 pub struct WithdrawSpl<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
+    #[account(mut)]
     pub owner_ata: Account<'info, TokenAccount>,
     #[account(mut, has_one = owner)]
     pub vault_state: Account<'info, Vault>,
-    #[account(seeds = [b"auth", vault_state.key().as_ref()], bump)]
+    #[account(seeds = [b"auth", vault_state.key().as_ref()], bump=vault_state.vault_bump)]
     /// CHECK
     pub vault_auth: UncheckedAccount<'info>,
     #[account(mut)]
